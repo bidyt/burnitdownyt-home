@@ -1062,7 +1062,7 @@ const Product = () => {
                         <span className="discount-icon"><img src="ticket-percent2.png" alt="Discount" /></span>
                         10% off store—Limited time!
                         <Link to="/#shop"  className="shop-now">
-                            Shop Now <img className="nav-arrow" src="arrow-right-blue.png" alt="Arrow" />
+                            <img src="shop.svg" alt="Arrow" />
                         </Link>
                         <button 
                             className="discount-close"
@@ -1233,7 +1233,7 @@ const Product = () => {
                     <section className="related-products-section">
                         <div className="section-header">
                             <h2 className="section-title">You might also like</h2>
-                            <Link to="/#shop" onClick={() => scrollToSection(shopRef)}><button className="more-products-link">More Products <img className="nav-arrow" src="arrow-right-black.png"/></button></Link>
+                            <Link to="/#shop" onClick={() => scrollToSection(shopRef)}><button className="more-products-link"><img src="button.svg"/></button></Link>
                         </div>
                         
                         <div className="products-scroll-container">
@@ -1267,7 +1267,7 @@ const Product = () => {
                         </div>
                          <div className="mobile-more-products">
         <Link to="/#shop"><button className="more-products-link">
-            More Products <img className="nav-arrow" src="arrow-right-black.png"/>
+            <img src="button.svg"/>
         </button></Link>
         </div>
                     </section>
