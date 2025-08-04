@@ -1,11 +1,20 @@
 import logo from './logo.svg';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import BIDapp from './Components/BIDapp';
+import News from './Components/Contact.js';
+import Tickets from './Components/tickets.js'
+import Shows from './Components/Shows.js'
 
-
-function App() {
+/*function App() {
   return (
-    <BIDapp/>
+     <Routes>
+        <Route path="/" element={<BIDapp/>}></Route>
+        <Route path="/news" element={<News/>}></Route>
+        <Route path="/tickets" element={<Tickets/>}></Route>
+        <Route path="/shows" element={<Shows/>}></Route>
+     </Routes>
   );
 } 
 

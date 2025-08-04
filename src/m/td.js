@@ -1,152 +1,62 @@
-import { useState, useRef, useEffect } from 'react';
-import {Link, useLocation} from "react-router-dom"
-const BIDapp = () => {
+import { useState, useRef } from 'react';
+
+const BIDapp= () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDiscountVisible, setIsDiscountVisible] = useState(true);
-    
-    // Carousel state
-    const [newsCurrentIndex, setNewsCurrentIndex] = useState(0);
-    const [shopCurrentIndex, setShopCurrentIndex] = useState(0);
-    
-    // Items per page based on screen size
-    const itemsPerPage = 4;
-    const shopitemsPerPage = 12;
-
-    // News data (using same images as requested)
-    const newsItems = [
-        { id: 1, image: "instagrampostcover1.jpg", label: "NEW" , link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1"},
-        { id: 2, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/"},
-        { id: 3, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/" },
-        { id: 4, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" },
-        { id: 5, image: "instagrampostcover1.jpg", label: "NEW", link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1" },
-        { id: 6, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/" },
-        { id: 7, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/"},
-        { id: 8, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" },
-        { id: 9, image: "instagrampostcover1.jpg", label: "NEW", link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1" },
-        { id: 10, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/" },
-        { id: 11, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/"},
-        { id: 12, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" }
-    ];
-    
-    // Shop data (using existing products)
-    const shopItems = [
-        { id: 1, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
-        { id: 2, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
-        { id: 3, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
-        { id: 4, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
-        { id: 5, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
-        { id: 6, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
-        { id: 7, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
-        { id: 8, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
-        { id: 9, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
-        { id: 10, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
-        { id: 11, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
-        { id: 12, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" },
-        { id: 13, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
-        { id: 14, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
-        { id: 15, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
-        { id: 16, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
-        { id: 17, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
-        { id: 18, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
-        { id: 19, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
-        { id: 20, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
-        { id: 21, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
-        { id: 22, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
-        { id: 23, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
-        { id: 24, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"}
-    ];
-    
-    const newsPages = Math.ceil(newsItems.length / itemsPerPage);
-    const shopPages = Math.ceil(shopItems.length / shopitemsPerPage);
-
     // Refs for scrolling to sections
     const homeRef = useRef(null);
     const shopRef = useRef(null);
     const latestNewsRef = useRef(null);
-    const location = useLocation();
-
-  useEffect(() => {
-    if (location.hash === '#shop') {
-      shopRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-    else if (location.hash === '#news'){
-      latestNewsRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-    else if (location.hash === '#home'){
-      homeRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [location]);
+    
     const scrollToSection = (ref) => {
         ref.current?.scrollIntoView({ behavior: 'smooth' });
         setIsMobileMenuOpen(false);
     };
-
-    const scrollToNewsPage = (pageIndex) => {
-        setNewsCurrentIndex(pageIndex);
-    };
-
-    const scrollToShopPage = (pageIndex) => {
-        setShopCurrentIndex(pageIndex);
-    };
-
     const handleMediaKitDownload = () => {
         const link = document.createElement('a');
-        link.href = '';
-        link.download = '';
+        link.href = 'Media-kit.pdf';
+        link.download = 'MediaKit.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         setIsMobileMenuOpen(false);
     };
 
-    // Get current items for display
-    const getCurrentNewsItems = () => {
-        const startIndex = newsCurrentIndex * itemsPerPage;
-        return newsItems.slice(startIndex, startIndex + itemsPerPage);
-    };
-
-    const getCurrentShopItems = () => {
-        const startIndex = shopCurrentIndex * shopitemsPerPage;
-        return shopItems.slice(startIndex, startIndex + shopitemsPerPage);
-    };
-
     // Safe icon components using Unicode/HTML entities
     const MenuIcon = () => <span style={{fontSize: '20px'}}>☰</span>;
     const CloseIcon = () => <span style={{fontSize: '20px'}}>✕</span>;
-    const UserIcon = ({ isMobile = false }) => (
-        <button
-            style={{
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                filter: isMobile ? 'invert(1)' : 'none',
-            }}
-            aria-label="User"
-        >
-            <img src="user.png" alt="User Icon" style={{ width: '20px' }} />
-        </button>
-    );
-    
+    const UserIcon = ({ isMobile = false }) => (<button
+    style={{
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      filter: isMobile ? 'invert(1)' : 'none',
+    }}
+    aria-label="User"
+  >
+    <img src="user.png" alt="User Icon" style={{ width: '20px' }} />
+  </button>
+);
     const ShoppingBagIcon = () => (
-        <button
-            style={{
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-            aria-label="Shopping Bag"
-        >
-            <img src="shoppingbag.png" alt="Shopping Icon" style={{ width: '20px' }} />
-        </button>
-    );
+  <button
+    style={{
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    aria-label="Shopping Bag"
+  >
+    <img src="shoppingbag.png" alt="Shopping Icon" style={{ width: '20px' }} />
+  </button>
+);
 
     const NavLinks = ({ isMobile = false, onItemClick }) => (
         <nav className={isMobile ? 'mobile-nav' : 'desktop-nav'}>
@@ -154,7 +64,7 @@ const BIDapp = () => {
                 Home
             </button>
             <button onClick={() => onItemClick ? onItemClick(shopRef) : scrollToSection(shopRef)} className="nav-link">
-            →Shop 
+                →Shop 
             </button>
             <button onClick={() => onItemClick ? onItemClick(latestNewsRef) : scrollToSection(latestNewsRef)} className="nav-link">
                 →Latest News
@@ -162,13 +72,13 @@ const BIDapp = () => {
             <button onClick={handleMediaKitDownload} className="nav-link">
                 Media Kit
             </button>
-           <Link to="/Contact"><button onClick={() => console.log('Contact Us clicked')} className="nav-link">
+            <button onClick={() => console.log('Contact Us clicked')} className="nav-link">
                 Contact Us
-            </button></Link>
-            {isMobile && (
-                <div className="mobile-user-icon">
-                    <UserIcon/>
-                </div>
+            </button>
+             {isMobile && (
+              <div className="mobile-user-icon">
+            <UserIcon/>
+            </div>
             )}
         </nav>
     );
@@ -193,89 +103,19 @@ const BIDapp = () => {
                     min-height: 100vh;
                     background-color: #000;
                 }
-
                 .nav-item {
                     display: inline-flex;
                     align-items: center;
-                    gap: -122px;
-                }
-
-                .nav-arrow {
-                    margin-right: -45px;
-                    vertical-align: middle;
-                }
-                .latest-news .section-container,
-                .shop .section-container {
-                    position: relative;
-                }
-                /* Pagination Dots */
-                .pagination-dots {
-                      position: absolute;   /* pull out of normal flow */
-                      display: flex;
-                      gap: 8px;
-                      padding: 0;
-                      margin: 0;
-                }
-
-                .pagination-dot {
-                    width: 16px;
-                    height: 16px;
-                    border: none;
-                    cursor: pointer;
-                    background-color:white;
-                    background-size: cover;
-                    background-position: center;
-                    transition: background-color 0.3s ease;
-                }
-                .pagination-dot.active {
-                    background-image: url('/Elements.png');
+                    gap: -122px; /* Controls the spacing between arrow and text */
+}
+                    .nav-arrow {
+                     margin-right: -45px; /* pulls the image closer to the button */
+                     vertical-align: middle; /* aligns the arrow vertically with the text */
                     
-                }
-
-                .pagination-dot.inactive {
-                    background-image: url('/Elements2.png');
-                }
-
-                
-
-                .shop .pagination-dot.active {
-                    background-image: url('/Elements.png');
-                }
-
-                .shop .pagination-dot.inactive {
-                    background-image: url('/Elements2.png');
-                }
-                .latest-news .pagination-dots {
-                    top: 1.2rem;    /* adjust to taste */
-                    right: 1.15rem;    /* adjust to taste */
-                }
-
-                  /* — Shop: centered under the grid — */
-                 .shop .pagination-dots {
-                     top: 1.2rem;          /* pull it below the grid */
-                     right: 88%;                /* start at 50% */
-    
-                }
-                @media (max-width: 767px) {
-                  .latest-news .pagination-dots {
-                     top: 1.2rem;    /* adjust to taste */
-                     right: 2rem; 
-                  }
-                  .shop .pagination-dots {
-                      top: 1.2rem;          /* pull it below the grid */
-                      right: 1.5rem;
-                      
-                  }
-                   .latest-news .section-title {
-                       position: relative;    /* adjust to taste */
-                       right: -1rem;
-                   }
-                    .shop .section-title {
-                       position: relative;    /* adjust to taste */
-                       right: -0.5rem;
-                   }
+                    
                 
                 }
+
                 /* Discount Banner */
                 .discount-banner {
                     background-color: black;
@@ -294,8 +134,8 @@ const BIDapp = () => {
                 .discount-banner .discount-icon {
                     display:flex;
                     align-items:center;
-                }
-
+                    
+            }
                 .discount-close {
                     position: relative;
                     right: -2rem;
@@ -308,11 +148,11 @@ const BIDapp = () => {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                }
+}
 
-                .discount-close:hover {
-                    color: #ccc;
-                }
+.discount-close:hover {
+    color: #ccc;
+}
 
                 /* Header Styles */
                 .header {
@@ -335,6 +175,7 @@ const BIDapp = () => {
                     position: relative;
                 }
 
+
                 .logo {
                     font-size: 1.4rem;
                     font-weight: bold;
@@ -343,17 +184,17 @@ const BIDapp = () => {
                     background-color: white;
                     flex: 1;
                     margin-left: 0.5rem;
+                    
                 }
 
                 .desktop-nav {
                     display: none;
-                    gap: 2rem;
-                    align-items:center;
+                    gap: 2.5rem;
                     background-color: white;
                     position: absolute;
                     left: 50%;
                     transform: translateX(-50%);
-                    z-index: 10;
+                      z-index: 10;
                 }
 
                 .nav-link {
@@ -369,38 +210,38 @@ const BIDapp = () => {
                     transition: color 0.3s;
                     display: inline-flex;
                     align-items: center;
-                    gap: 0.15rem;
+                    gap: 0.25rem;
                     white-space: nowrap;
                 }
-
                 .nav-link img {
-                    display: inline-block;
-                    width: 1rem;
-                    height: auto;
-                    margin: 0;
+                   display: inline-block;
+                   width: 1rem;
+                   height: auto;
+                   margin: 0;
                 }
+       
 
                 .nav-link:hover {
                     color: #000;
                     background-color: white;
                 }
-
+                
                 .nav-link1.no-underline {
-                    text-decoration: none;
+                   text-decoration: none;
+                
                 }
-
-                @media (max-width: 768px) {
-                    .header-right {
-                        display: none;
-                    }
-                }
+                    @media (max-width: 768px) {
+  .header-right {
+    display: none;
+  }
+}
 
                 .header-right {
                     display: flex;
                     align-items: center;
                     gap: 0.2rem;
                     background-color: white;
-                    flex: 1;
+                    flex: 1; /* Take up available space */
                     justify-content: flex-end;
                 }
 
@@ -415,16 +256,15 @@ const BIDapp = () => {
                 .header-icon:hover {
                     background-color: #f5f5f5;
                 }
-
-                .desktop-only {
-                    display: inline-flex;
-                }
-
-                @media (max-width: 768px) {
                     .desktop-only {
-                        display: none !important;
-                    }
-                }
+  display: inline-flex;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
 
                 .mobile-menu-btn {
                     background: none;
@@ -463,24 +303,16 @@ const BIDapp = () => {
                     display: flex;
                     flex-direction: column;
                     gap: 1.5rem;
-                    align-items:center;
                     background-color: white;
                     color: white;
                 }
 
                 .mobile-nav .nav-link {
                     font-size: 1.1rem;
-                    padding: 1.2rem 1rem;
+                    padding: 1rem 0;
                     border-bottom: white;
                     text-align: center;
-                    align-items:center;
-                    justify-content: center
                     color: black;
-                    width: 100%;
-                    max-width: 300px;
-                    display:flex;
-                    transition: background-color 0.3s;
-                    margin:0;
                 }
 
                 .close-btn {
@@ -518,8 +350,7 @@ const BIDapp = () => {
                     color: #666;
                     font-size: 1rem;
                 }
-
-                .hero-logo img {
+                    .hero-logo img {
                     width: 100%;
                     height: 76%;
                     display:block;
@@ -565,13 +396,12 @@ const BIDapp = () => {
                     font-weight: 600;
                     gap: 0.5rem;
                 }
-
                 .section-arrow {
-                    font-size: 1.2rem;
-                    color: #666;
-                    cursor: pointer;
-                    transition: color 0.3s;
-                }
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
                 .news-grid {
                     display: grid;
@@ -582,7 +412,7 @@ const BIDapp = () => {
 
                 .news-card {
                     background-color: transparent;
-                    border-radius: 0px;
+                    border-radius: 8px;
                     overflow: hidden;
                     box-shadow: none;
                     transition: transform 0.3s, box-shadow 0.3s;
@@ -594,7 +424,6 @@ const BIDapp = () => {
                     transform: translateY(-4px);
                     box-shadow: 0 4px 16px rgba(255, 255,255,1);
                 }
-
                 .news-image {
                     width: 100%;
                     height: 420px;
@@ -607,11 +436,11 @@ const BIDapp = () => {
                     font-size: 0.85rem;
                     border-bottom: none;
                 }
-
+                
                 .news-image img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                   width: 100%;
+                   heigh:100%
+                   object-fit:cover
                 }
 
                 .news-content {
@@ -619,19 +448,20 @@ const BIDapp = () => {
                 }
 
                 .news-label {
-                    background-color: white;
-                    color: black;
-                    padding: 0.25rem 0.6rem;
-                    border-radius: 12px;
-                    font-size: 0.75rem;
-                    font-weight: bold;
-                    display: inline-block;
-                    margin-bottom: 0.7rem;
-                    text-transform: uppercase;
-                    position: absolute;
-                    top: 12px;
-                    left: 12px;
-                    z-index: 10;
+                    /* Removed position: absolute; top; left; */
+                background-color: white;
+                color: black;
+                padding: 0.25rem 0.6rem;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                display: inline-block; /* Changed to inline-block */
+                margin-bottom: 0.7rem; /* Added margin-bottom for spacing */
+                text-transform: uppercase;
+                position: absolute; /* Added back for specific placement within the card as seen in HOMEPAGE.jpg */
+                top: 12px; /* Adjusted as per HOMEPAGE.jpg */
+                left: 12px; /* Adjusted as per HOMEPAGE.jpg */
+                z-index: 10;
                 }
 
                 .news-title {
@@ -662,7 +492,7 @@ const BIDapp = () => {
                 .product-card {
                     background-color: #fff;
                     border: 1px solid white;
-                    border-radius: 0px;
+                    border-radius: 8px;
                     overflow: hidden;
                     transition: transform 0.3s, box-shadow 0.3s;
                     cursor: pointer;
@@ -670,6 +500,7 @@ const BIDapp = () => {
 
                 .product-card:hover {
                     transform: translateY(-4px);
+                    
                 }
 
                 .product-image {
@@ -684,7 +515,6 @@ const BIDapp = () => {
                     border-bottom: 1px solid white;
                     font-size: 0.85rem;
                 }
-
                 .product-image img {
                     width:100%;
                     height:100%;
@@ -701,7 +531,7 @@ const BIDapp = () => {
                     padding: 0.3rem 0.7rem;
                     border-radius: 12px;
                     font-size: 0.75rem;
-                    font-weight: bold;
+                    font-weight: 600;
                     text-transform: uppercase;
                 }
 
@@ -722,6 +552,8 @@ const BIDapp = () => {
                     font-weight: 600;
                     font-size: 1.1rem;
                 }
+
+
 
                 /* Brand Highlights */
                 .brand-highlights {
@@ -770,15 +602,16 @@ const BIDapp = () => {
                     overflow: hidden;
                     display: block;
                     margin: 0;
-                }
 
-                .highlight-icon img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    object-position:center;
-                    display: block;
+                    
                 }
+                .highlight-icon img {
+                  width: 100%;
+                  height: 100%;
+               object-fit: cover;  /* or cover if you want to fill the box */
+                 object-position:center;
+                 display: block;
+}
 
                 /* Footer */
                 .footer {
@@ -850,11 +683,9 @@ const BIDapp = () => {
                     font-size: 0.85rem;
                     text-align: center;
                 }
-
                 a {
                     text-decoration:none;
                 }
-
                 /* Responsive Design */
                 @media (min-width: 768px) {
                     .mobile-menu-btn {
@@ -866,10 +697,10 @@ const BIDapp = () => {
                     }
 
                     .tickets-btn {
-                        position: absolute;
-                        top: 2rem;
-                        right: 8.8rem;
-                        margin-top: 0;
+                        position: absolute; /* Absolute for desktop*/
+                        top: 2rem; /* Position from top*/
+                        right: 8.8rem; /* Position from right*/
+                        margin-top: 0; /* Reset mobile margin */
                     }
 
                     .hero-content {
@@ -890,6 +721,7 @@ const BIDapp = () => {
                         padding: 0.5rem 0;
                         background-color: black;
                         text-decoration: none;
+
                     }
 
                     .footer-nav .nav-link1:hover {
@@ -897,104 +729,10 @@ const BIDapp = () => {
                         color: #black;
                         text-decoration: none;
                     }
+                   
                 }
-                 /* Mobile-specific styles */
-                @media (max-width: 767px) {
-                    /* Latest News: 4 across on mobile */
-                    .latest-news .news-grid {
-                        display: flex;
-                        overflow-x: auto;
-                        scroll-behavior: smooth;
-                        gap: 1rem;
-                        padding: 0 1rem;
-                        -webkit-overflow-scrolling: touch;
-                        scrollbar-width: none; /* Firefox */
-                        -ms-overflow-style: none; /* IE/Edge */
+                
 
-                    }
-                    .latest-news .news-grid::-webkit-scrollbar {
-                        display:none;
-                    }
-                    
-                    .latest-news .news-card {
-                       flex: 0 0 280px; /* Fixed width, larger cards */
-                        min-width: 280px;
-                    }
-                    
-                    .latest-news .news-image {
-                        height: 350px; /* Smaller height for mobile 4-column layout */
-                    }
-                    
-                    .latest-news .news-label {
-                        font-size: 0.75rem;
-                        padding: 0.25rem 0.6rem;
-                        top: 12px;
-                        left: 12px;
-                    }
-
-                    /* Shop: 2 across on mobile */
-                    .shop .shop-grid {
-                        display: grid;
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 1rem;
-                        padding: 0 0.5rem;
-                    }
-
-                    .latest-news {
-                        border-bottom: none;
-                        margin-bottom: 0;
-                    }
-                       
-                    
-                    .brand-highlights {
-                        border-top: none;
-                        margin-top: 0;
-                    }
-                    
-                    .shop .product-card {
-                        min-width: 0; /* Allows items to shrink */
-                    }
-                    
-                    .shop .product-image {
-                        height: 200px; /* Appropriate height for mobile 2-column layout */
-                    }
-                    
-                    .shop .hot-badge {
-                        font-size: 0.65rem;
-                        padding: 0.2rem 0.5rem;
-                        top: 8px;
-                        left: 8px;
-                    }
-                    
-                    .shop .product-info {
-                        padding: 0.8rem;
-                    }
-                    
-                    .shop .product-title {
-                        font-size: 0.85rem;
-                        line-height: 1.2;
-                        margin-bottom: 0.5rem;
-                    }
-                    
-                    .shop .product-price {
-                        font-size: 0.95rem;
-                    }
-                }
-                @media (max-width: 767px) and (orientation: landscape) {
-                    .shop .product-image {
-                        height: 380px; /* Appropriate height for mobile 2-column layout */
-                    }
-                }
-                @media (min-width: 768px) and (max-width: 1023px) {
-                    /* Tablet styles */
-                    .news-grid {
-                        grid-template-columns: repeat(3, 1fr);
-                    }
-
-                    .shop-grid {
-                        grid-template-columns: repeat(3, 1fr);
-                    }
-                }
                 @media (min-width: 1024px) {
                     .news-grid {
                         grid-template-columns: repeat(4, 1fr);
@@ -1007,30 +745,29 @@ const BIDapp = () => {
                     .highlights-grid {
                         grid-template-columns: repeat(4, 1fr);
                     }
-
-                    .highlights-grid {
-                        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                        gap: 1.5rem;
-                    }
-                       
-}              
+                        .highlights-grid {
+            /* Adjust grid template columns if 200px icon size affects overall layout */
+            /* You might need to make the columns larger or fewer if the 200px icons are too big */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Example adjustment for min-width for larger icons */
+            gap: 1.5rem; /* Adjust gap as needed */
+        }
                 }
             `}</style>
 
-            <div className="container" id="home">
-                {/* Discount Banner */}
+            <div className="container">
+                {/* Discount Banner → */}
                 {isDiscountVisible && (
-                    <div className="discount-banner">
-                        <span className="discount-icon"><img src="ticket-percent.png"/></span>
-                        10% off store—Limited time!
-                        <button 
-                            className="discount-close"
-                            onClick={() => setIsDiscountVisible(false)}
-                        >
-                            ✕
-                        </button>
-                    </div>
-                )}
+    <div className="discount-banner">
+        <span className="discount-icon"><img src="ticket-percent.png"/></span>
+        10% off store—Limited time!
+        <button 
+            className="discount-close"
+            onClick={() => setIsDiscountVisible(false)}
+        >
+            ✕
+        </button>
+    </div>
+)}
 
                 {/* Header */}
                 <header className="header">
@@ -1053,6 +790,8 @@ const BIDapp = () => {
                                 <ShoppingBagIcon />
                             </div>
                         </div>
+
+                        
                     </div>
                 </header>
 
@@ -1076,74 +815,182 @@ const BIDapp = () => {
                 <section ref={homeRef} className="hero">
                     <div className="hero-content">
                         <div className="hero-logo">
-                            <img className="hero-logo img" src="MANIA-HOMECOVER.jpg"/>
+                            <img className="hero-logo img"src="MANIA-HOMECOVER.jpg"/>
                         </div>
                         <button className="tickets-btn">Tickets</button>
                     </div>
                 </section>
 
                 {/* Latest News Section */}
-                <section ref={latestNewsRef} className="latest-news" id="news">
+                <section ref={latestNewsRef} className="latest-news">
                     <div className="section-container">
                         <h2 className="section-title">Latest News</h2>
-                        
-                        {/* News Pagination Dots */}
-                        <div className="pagination-dots">
-                            {Array.from({ length: newsPages }).map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => scrollToNewsPage(index)}
-                                    className={`pagination-dot ${newsCurrentIndex === index ? 'active' : 'inactive'}`}
-                                />
-                            ))}
-                        </div>
-
                         <div className="news-grid">
-                            {getCurrentNewsItems().map((item) => (
-                                <div key={item.id} className="news-card">
-                                    <span className="news-label">{item.label}</span>
-                                    <div className="news-image">
-                                        <a href={item.link}><img src={item.image} alt="News" sr/></a>
-                                    </div>
+                            <div className="news-card">
+                            <span className="news-label">NEW</span>
+                                <div className="news-image">
+                                    <a href="https://www.instagram.com/p/DMjET-lT4FN/?img_index=1"><img src="instagrampostcover1.jpg"/></a>
+                               </div>
+                            </div>
+                            <div className="news-card">
+                                    <span className="news-label">NEW</span>
+                                <div className="news-image">
+                                    <a href="https://www.instagram.com/p/DL2cGp0BfHB/"><img src="instagrampost2cover.webp"/></a>
                                 </div>
-                            ))}
-                        </div>
+                                
+                            </div>
+
+                            <div className="news-card">
+                            <span className="news-label">NEW</span>
+                                <div className="news-image">
+                                    <a href="https://www.instagram.com/p/DLK6uriz7bf/"><img src="instagrampostcover3.jpg"/></a>
+                                
+                                    
+                                </div>
+                            </div>
+                            
+
+                            <div className="news-card">
+                                    <div className="news-label">
+                                    <span >NEW</span>
+                                    </div>
+                                    <div className="news-image">
+                                    <a href="https://www.instagram.com/p/DMdfP8dzRit/"><img src="instagrampostcover4.jpg"/></a>
+                                </div>
+                            </div>
+                    </div>
                     </div>
                 </section>
 
                 {/* Shop Section */}
-                <section ref={shopRef} className="shop" id="shop">
+                <section ref={shopRef} className="shop">
                     <div className="section-container">
                         <h2 className="section-title">Shop</h2>
-                        
-                        {/* Shop Pagination Dots */}
-                        <div className="pagination-dots">
-                            {Array.from({ length: shopPages }).map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => scrollToShopPage(index)}
-                                    className={`pagination-dot ${shopCurrentIndex === index ? 'active' : 'inactive'}`}
-                                />
-                            ))}
-                        </div>
-
                         <div className="shop-grid">
-                            {getCurrentShopItems().map((item) => (
-                                <div key={item.id} className="product-card">
-                                    <div className="product-image">
-                                        {item.badge && <span className="hot-badge">{item.badge}</span>}
-                                        <a href={item.link} target="_blank" rel="noopener noreferrer"><img src={item.image} alt={item.title}/></a>
-                                    </div>
-                                    {item.title !== "View More Belts" && (
-                                        <div className="product-info">
-                                            <h3 className="product-title">{item.title}</h3>
-                                            <div className="product-price">{item.price}</div>
-                                        </div>
-                                    )}
+                            {/* First Row */}
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <span className="hot-badge">HOT</span>
+                                    <img src="WWEBELTCENA.png"/>
                                 </div>
-                            ))}
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE Undisputed Championship with John Cena side plates</h3>
+                                    <div className="product-price">$2199.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <span className="hot-badge">HOT</span>
+                                    <img src="WIGNEDEAGLE_.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE Winged Eagle Championship Belt</h3>
+                                    <div className="product-price">$1799.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="SPINNERBELTTT.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE Spinner Championship with Custom name plate</h3>
+                                    <div className="product-price">$1699.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="WORLDTITLEE.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE Big Gold World Heavyweight Championship</h3>
+                                    <div className="product-price">$1799.00</div>
+                                </div>
+                            </div>
+
+                            {/* Second Row */}
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="UNDISPUTEDTITLE.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE Undisputed Championship with Custom name plate</h3>
+                                    <div className="product-price">$1699.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <span className="hot-badge">HOT</span>
+                                   <img src="WORLDTITLE.png"/> 
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE New World Heavyweight Championship Belt</h3>
+                                    <div className="product-price">$1999.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="CUSTOMSIDEPLATES.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">Custom WWE Side Plates of any WWE Superstar / Custom Design</h3>
+                                    <div className="product-price">$349.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="NXTTITLE.png"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE New NXT Championship</h3>
+                                    <div className="product-price">$1199.00</div>
+                                </div>
+                            </div>
+
+                            {/* Third Row */}
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="smoking-skull-title.jpg"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">John Cena 2025 Farewell Tour Poster Autograph</h3>
+                                    <div className="product-price">$599.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <span className="hot-badge">HOT</span>
+                                    <img src="WWF-TITLEE.jpg"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">Roman Reigns Tribal Chief Poster Autograph 2025</h3>
+                                    <div className="product-price">$699.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <img src="US-TITLEE.jpg"/>
+                                </div>
+                                <div className="product-info">
+                                    <h3 className="product-title">WWE US Spinner Championship</h3>
+                                    <div className="product-price">$1899.00</div>
+                                </div>
+                            </div>
+
+                            <div className="product-card">
+                                <div className="product-image">
+                                    <a href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"><img src="morebeltsbutton.png"/></a>
+                                </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                 </section>
 
                 {/* Brand Highlights */}
@@ -1156,22 +1003,22 @@ const BIDapp = () => {
                         <div className="highlights-grid">
                             <div className="highlight-card">
                                 <div className="highlight-icon">
-                                    <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><img src="2k-logo.jpg" alt="2K Logo"/></a>
+                                    <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr"><img src="2k-logo.jpg"/></a>
                                 </div>
                             </div>
                             <div className="highlight-card">
                                 <div className="highlight-icon">
-                                    <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" target="_blank" rel="noopener noreferrer"><img src="Youtube_bl.png" alt="YouTube"/></a>
+                                    <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1"><img src="YOUTUBEE.png"/></a>
                                 </div>
                             </div>
                             <div className="highlight-card">
                                 <div className="highlight-icon">
-                                    <a href="https://www.instagram.com/stories/highlights/18026461703054293/" target="_blank" rel="noopener noreferrer"><img src="W.png" alt="WWE"/></a>
+                                    <a href="https://www.instagram.com/stories/highlights/18026461703054293/"><img src="W.png"/></a>
                                 </div>
                             </div>
                             <div className="highlight-card">
                                 <div className="highlight-icon">
-                                    <a href="Media-kit.pdf" download><img src="Mediakit.png" alt="Media Kit"/></a>
+                                    <a href="Media-kit.pdf" download >< img src="Mediakit.png"/></a>
                                 </div>
                             </div>
                         </div>
@@ -1184,15 +1031,15 @@ const BIDapp = () => {
                         <nav className="footer-nav">
                             <button onClick={() => scrollToSection(homeRef)} className="nav-link1">Home</button>
                             <button onClick={() => scrollToSection(shopRef)} className="nav-link1">Shop</button>
-                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><button className="nav-link1">2K Community</button></a>
+                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr"><button className="nav-link1">2K Community</button></a>
                             <button onClick={handleMediaKitDownload} className="nav-link1">Media kit</button>
-                            <Link to="/Contact"><button onClick={() => console.log('Contact Us clicked')} className="nav-link1">Contact Us</button></Link>
+                            <button onClick={() => console.log('Contact Us clicked')} className="nav-link1">Contact Us</button>
                         </nav>
                         
                         <div className="social-icons">
-                            <a href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="instagram1.png"/></a>
-                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="facebook1.png"/></a>
-                            <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="youtube1.png"/></a>
+                            <a href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" className="social-icon"><img src="instagram1.png"/></a>
+                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" className="social-icon"><img src="facebook1.png"/></a>
+                            <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" className="social-icon"><img src="youtube1.png"/></a>
                         </div>
                         
                         <p className="footer-text">© 2025 BURNITDOWNYT. All rights reserved.</p>
