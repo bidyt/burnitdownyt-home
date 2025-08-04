@@ -1098,6 +1098,19 @@ const Product = () => {
                         {/* Product Images */}
                         <div className="product-images-section">
                             <div className="main-product-image">
+                               {currentImageIndex === 1 ? (
+                                <a
+                                href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >
+                                <img
+                                src={product.images[currentImageIndex]}
+                                alt={`${product.name} additional view`}
+                                />
+                                </a>
+                                ) : (
+                                <img src={product.images[currentImageIndex]} alt={product.name}/>)}
                                 <img src={product.images[currentImageIndex]} alt={product.name} />
                                 <div className={`badge-container ${currentImageIndex === 1 ? 'hide-badges' : ''}`}>
                                     <div className="product-badge">NEW</div>
