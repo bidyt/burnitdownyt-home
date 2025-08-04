@@ -1021,7 +1021,7 @@ const BIDapp = () => {
                 {/* Discount Banner */}
                 {isDiscountVisible && (
                     <div className="discount-banner">
-                        <span className="discount-icon"><img src="ticket-percent.png"/></span>
+                        <span className="discount-icon"><img src="ticket-percent-white.svg"/></span>
                         10% off store—Limited time!
                         <button 
                             className="discount-close"
