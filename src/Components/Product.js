@@ -188,7 +188,7 @@ const Product = () => {
 
                 /* Discount Banner */
                 .discount-banner {
-                    background-color: #D3D3D3;
+                    background-color: #F5F5F5;
                     color: black;
                     text-align: center;
                     padding: 0.5rem;
@@ -1059,7 +1059,7 @@ const Product = () => {
                 {/* Discount Banner */}
                 {isDiscountVisible && (
                     <div className="discount-banner">
-                        <span className="discount-icon"><img src="ticket-percent2.png" alt="Discount" /></span>
+                        <span className="discount-icon"><img src="ticket-percent.svg" alt="Discount" /></span>
                         10% off store—Limited time!
                         <Link to="/#shop"  className="shop-now">
                             <img src="shop.svg" alt="Arrow" />
