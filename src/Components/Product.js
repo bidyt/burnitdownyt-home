@@ -208,6 +208,20 @@ const Product = () => {
                     margin-left: 4px;
                 
                 }
+                .related-products-section .more-products-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px; /* optional: adds spacing between text and image */
+                }
+
+                .related-products-section .nav-arrow {
+                    width: 14px;
+                    height: 14px;
+                    margin-top: -2px;
+                    margin-left: -4px; /* or even negative if needed */
+                    vertical-align: middle;
+                }
+
 
                 .discount-banner .discount-icon {
                     display: flex;
