@@ -5,7 +5,6 @@ const Product = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDiscountVisible, setIsDiscountVisible] = useState(true);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [showAdditionalInfo, setShowAdditionalInfo] = useState(true);
     const [basePrice] = useState(100); // Set initial base price (e.g., 100)
@@ -85,6 +84,9 @@ const Product = () => {
         
         description: "Buy one or buy a few and make every space where you sit more convenient. Light and easy to move around with removable tray top, handy for serving snacks."
     };
+    const [price, setPrice] = useState(product.price);
+    const [origPrice,    setOrigPrice]    = useState(product.originalPrice);
+    const [quantity, setQuantity] = useState(1);
     // Related Products Data
     const relatedProducts = [
         {
@@ -138,13 +140,18 @@ const Product = () => {
         </nav>
     );
     
-    // Event Handlers
-    const handleQuantityChange = (change) => {
-    setQuantity(prevQuantity => {
-        const newQuantity = Math.max(1, prevQuantity + change);
-        return newQuantity;
-    });
+     // Event Handlers
+   const handleQuantityChange = (change) => {
+  setQuantity(prev => {
+    const newQty = Math.max(1, prev + change);
+
+    setCurrentPrice(product.price * newQty);
+    setOrigPrice   (product.originalPrice * newQty);
+
+    return newQty;
+  });
 };
+
 
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
@@ -1137,8 +1144,8 @@ const Product = () => {
                             <p className="product-description">{product.description}</p>
                             
                             <div className="price-container">
-                                <span className="current-price">${product.price.toFixed(2)}</span>
-                                <span className="original-price">${product.originalPrice.toFixed(2)}</span>
+                                <span className="current-price">${currentPrice.toFixed(2)}</span>
+                                <span className="original-price">${origPrice.toFixed(2)}</span>
                             </div>
 
                             <div className="product-controls">
@@ -1153,7 +1160,8 @@ const Product = () => {
                                         </button>
                                         <input 
                                             type="number" 
-                                            value={quantity} 
+                                            value={quantity}
+                                            readOnly
                                             onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                                             className="quantity-display"
                                             min="1"
