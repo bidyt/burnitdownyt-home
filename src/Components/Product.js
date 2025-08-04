@@ -1040,9 +1040,9 @@ const Product = () => {
                     <div className="discount-banner">
                         <span className="discount-icon"><img src="ticket-percent2.png" alt="Discount" /></span>
                         10% off store—Limited time!
-                        <a href="/" target="_blank" rel="noopener" className="shop-now">
+                        <Link to="/#shop"  className="shop-now">
                             Shop Now <img className="nav-arrow" src="arrow-right-blue.png" alt="Arrow" />
-                        </a>
+                        </Link>
                         <button 
                             className="discount-close"
                             onClick={() => setIsDiscountVisible(false)}
