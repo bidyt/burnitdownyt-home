@@ -553,7 +553,7 @@ const Product = () => {
                     padding: 5px 6px;
                     border-radius: 6px;
                     font-size: 11px;
-                    font-weight: 600;
+                    font-weight: bold;
                 }
 
                 .product-badge {
@@ -869,7 +869,7 @@ const Product = () => {
                     padding: 5px 6px;
                     border-radius: 6px;
                     font-size: 11px;
-                    font-weight: 600;
+                    font-weight: bold;
                 }
 
                 .card-badge {
