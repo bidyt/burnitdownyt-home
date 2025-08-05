@@ -1,753 +1,1218 @@
-import React, { useEffect, useState } from 'react';
-
+import { useState, useRef, useEffect } from 'react';
+import {Link, useLocation} from "react-router-dom"
 const BIDapp = () => {
-    const [search, setSearch] = useState("");
-    const [newsData, setNewsData] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDiscountVisible, setIsDiscountVisible] = useState(true);
+    
+    // Carousel state
+    const [newsCurrentIndex, setNewsCurrentIndex] = useState(0);
+    const [shopCurrentIndex, setShopCurrentIndex] = useState(0);
+    
+    // Items per page based on screen size
+    const itemsPerPage = 4;
+    const shopitemsPerPage = 12;
 
-    // Mock data for demonstration purposes
-   const mockNewsData = [
-        {
-            title: "165 New Stars Roster Reveal",
-            urlToImage: "/2k25-1.jpg",
-            url: "https://www.youtube.com/watch?v=EdYsk6HFPgY",
-            duration: "4:45",
-        },
-        {
-            title: "Current Male Roster Reveal",
-            urlToImage: "/2k25-2.jpg",
-            url: "https://www.youtube.com/watch?v=UNVNxNmYXn8",
-            duration: "9:22",
-        },
-        {
-            title: "Current Female Roster Reveal",
-            urlToImage: "/2k25-3.jpg",
-            url: "https://www.youtube.com/watch?v=HaNmPjuoCpQ&t=1s",
-            duration: "5:38",
-        },
-        {
-            title: "30 New Stars and 6 New Gimmicks",
-            urlToImage: "/2k25-4.jpg",
-            url: "https://www.youtube.com/watch?v=CBXgVaBFyeY",
-            duration: "2:33",
-        },
-        {
-            title: "Women's Money In The Bank Ladder Match",
-            urlToImage: "/2k25-5.jpg",
-            url: "https://www.youtube.com/watch?v=5RchjEwj5mM&t=1s",
-            duration: "28:40",
-        },
-        {
-            title: "John Cena vs Roman Reigns",
-            urlToImage: "/2k25-6.jpg",
-            url: "https://www.youtube.com/watch?v=IZJV-lUg9x4",
-            duration: "16:24",
-        }
+    // News data (using same images as requested)
+    const newsItems = [
+        { id: 1, image: "instagrampostcover1.jpg", label: "NEW" , link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1"},
+        { id: 2, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/"},
+        { id: 3, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/" },
+        { id: 4, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" },
+        { id: 5, image: "instagrampostcover1.jpg", label: "NEW", link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1" },
+        { id: 6, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/" },
+        { id: 7, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/"},
+        { id: 8, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" },
+        { id: 9, image: "instagrampostcover1.jpg", label: "NEW", link:"https://www.instagram.com/p/DMjET-lT4FN/?img_index=1" },
+        { id: 10, image: "instagrampost2cover.webp", label: "NEW", link:"https://www.instagram.com/p/DL2cGp0BfHB/" },
+        { id: 11, image: "instagrampostcover3.jpg", label: "NEW", link:"https://www.instagram.com/p/DLK6uriz7bf/"},
+        { id: 12, image: "instagrampostcover4.jpg", label: "NEW", link:"https://www.instagram.com/p/DMdfP8dzRit/" }
     ];
+    
+    // Shop data (using existing products)
+    const shopItems = [
+        { id: 1, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
+        { id: 2, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
+        { id: 3, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
+        { id: 4, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
+        { id: 5, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
+        { id: 6, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
+        { id: 7, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
+        { id: 8, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
+        { id: 9, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
+        { id: 10, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
+        { id: 11, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
+        { id: 12, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" },
+        { id: 13, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
+        { id: 14, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
+        { id: 15, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
+        { id: 16, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
+        { id: 17, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
+        { id: 18, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
+        { id: 19, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
+        { id: 20, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
+        { id: 21, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
+        { id: 22, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
+        { id: 23, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
+        { id: 24, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"}
+    ];
+    
+    const newsPages = Math.ceil(newsItems.length / itemsPerPage);
+    const shopPages = Math.ceil(shopItems.length / shopitemsPerPage);
 
-    useEffect(() => {
-        // Simulate fetching data
-        setTimeout(() => {
-            setNewsData(mockNewsData);
-            setLoading(false);
-        }, 1000);
-    }, []);
+    // Refs for scrolling to sections
+    const homeRef = useRef(null);
+    const shopRef = useRef(null);
+    const latestNewsRef = useRef(null);
+    const location = useLocation();
 
-    const handleSearch = () => {
-        if (!search.trim()) {
-            setNewsData(mockNewsData);
-            return;
-        }
-        setLoading(true);
-        setTimeout(() => {
-            const filteredData = mockNewsData.filter(item =>
-                item.title.toLowerCase().includes(search.toLowerCase())
-            );
-            setNewsData(filteredData);
-            setLoading(false);
-        }, 500);
+  useEffect(() => {
+    if (location.hash === '#shop') {
+      shopRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    else if (location.hash === '#news'){
+      latestNewsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    else if (location.hash === '#home'){
+      homeRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
+    const scrollToSection = (ref) => {
+        ref.current?.scrollIntoView({ behavior: 'smooth' });
+        setIsMobileMenuOpen(false);
     };
 
-    const navItems = ['NEWS', 'TICKETS', 'MEDIAKIT', 'SHOWS', 'SHOP'];
+    const scrollToNewsPage = (pageIndex) => {
+        setNewsCurrentIndex(pageIndex);
+    };
 
-    // This component renders a single video card
-    const VideoCard = ({ data }) => (
-        <a href={data.url} target="_blank" rel="noopener noreferrer" className="video-card">
-            <div className="video-card-image-container">
-                <img
-                    src={data.urlToImage}
-                    alt={data.title}
-                    className="video-card-image"
-                />
-                <div className="video-card-duration">{data.duration}</div>
-            </div>
-            <div className="video-card-content">
-                <h3>{data.title}</h3>
-                <p>Official</p>
-            </div>
-        </a>
+    const scrollToShopPage = (pageIndex) => {
+        setShopCurrentIndex(pageIndex);
+    };
+
+    const handleMediaKitDownload = () => {
+        const link = document.createElement('a');
+        link.href = '';
+        link.download = '';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setIsMobileMenuOpen(false);
+    };
+
+    // Get current items for display
+    const getCurrentNewsItems = () => {
+        const startIndex = newsCurrentIndex * itemsPerPage;
+        return newsItems.slice(startIndex, startIndex + itemsPerPage);
+    };
+
+    const getCurrentShopItems = () => {
+        const startIndex = shopCurrentIndex * shopitemsPerPage;
+        return shopItems.slice(startIndex, startIndex + shopitemsPerPage);
+    };
+
+    // Safe icon components using Unicode/HTML entities
+    const MenuIcon = () => <span style={{fontSize: '20px'}}>☰</span>;
+    const CloseIcon = () => <span style={{fontSize: '20px'}}>✕</span>;
+    const UserIcon = ({ isMobile = false }) => (
+        <button
+            style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                filter: isMobile ? 'invert(1)' : 'none',
+            }}
+            aria-label="User"
+        >
+            <img src="user.png" alt="User Icon" style={{ width: '20px' }} />
+        </button>
+    );
+    
+    const ShoppingBagIcon = () => (
+        <button
+            style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+            aria-label="Shopping Bag"
+        >
+            <img src="shoppingbag.png" alt="Shopping Icon" style={{ width: '20px' }} />
+        </button>
     );
 
-    // This component renders the navigation items for both desktop and mobile
-    const NavLinks = ({ isMobile = false }) => (
+    const NavLinks = ({ isMobile = false, onItemClick }) => (
         <nav className={isMobile ? 'mobile-nav' : 'desktop-nav'}>
-            {navItems.map((item) => {
-                if (item === 'MEDIAKIT') {
-                    return (
-                        <a
-                            key={item}
-                            href="Media-kit.pdf" // Using a sample PDF URL
-                            download="mediakit.pdf"
-                            className="nav-link"
-                            onClick={() => isMobile && setIsMobileMenuOpen(false)}
-                        >
-                            {item}
-                        </a>
-                    );
-                }
-                return (
-                    <button
-                        key={item}
-                        className="nav-link"
-                        onClick={() => {
-                            console.log(item, 'clicked');
-                            if (isMobile) setIsMobileMenuOpen(false);
-                        }}
-                    >
-                        {item}
-                    </button>
-                );
-            })}
+            <button onClick={() => onItemClick ? onItemClick(homeRef) : scrollToSection(homeRef)} className="nav-link">
+                Home
+            </button>
+            <button onClick={() => onItemClick ? onItemClick(shopRef) : scrollToSection(shopRef)} className="nav-link ">
+                →Shop
+            </button>
+            <button onClick={() => onItemClick ? onItemClick(latestNewsRef) : scrollToSection(latestNewsRef)} className="nav-link">
+                →Latest News
+            </button>
+            <button onClick={handleMediaKitDownload} className="nav-link">
+                Media Kit
+            </button>
+           <Link to="/Contact"><button onClick={() => console.log('Contact Us clicked')} className="nav-link">
+                Contact Us
+            </button></Link>
+            {isMobile && (
+                <div className="mobile-user-icon">
+                    <UserIcon/>
+                </div>
+            )}
         </nav>
     );
 
     return (
         <>
-            {/* We inject a style tag to handle responsive design using standard CSS media queries */}
             <style>{`
-                :root {
-                    --main-red: #c41e3a;
-                    --dark-bg: #000;
-                    --primary-bg: #111;
-                    --secondary-bg: #1a1a1a;
-                    --tertiary-bg: #2a2a2a;
-                    --border-color: #333;
-                    --text-light: #fff;
-                    --text-dark: #ccc;
-                    --text-muted: #666;
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
                 }
 
                 body {
-                    margin: 0;
-                    background-color: var(--dark-bg);
-                    color: var(--text-light);
-                    font-family: 'Roboto', 'Arial', sans-serif;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    background-color: #000;
+                    color: white;
+                    line-height: 1.6;
                 }
 
-                .app-container {
-                    background-color: var(--dark-bg);
+                .container {
                     min-height: 100vh;
+                    background-color: #000;
+                }
+
+                .nav-item {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: -122px;
+                }
+                .shop-link {
+                     position: relative;
+                     padding-right: 1.5rem; /* leave space for the arrow */
+                     background-color: white;
+                     border: none;
+                     cursor: pointer;
+                    }
+
+/* inject your arrow as a background, positioned just off the right edge */
+                .shop-link {
+                     background-image: url('arrow-right.png');
+                     background-repeat: no-repeat;
+                     background-position: calc(100% + 4px) center;
+                     background-size: 14px 14px;
+}
+                .nav-arrow {
+                    margin-right: -45px;
+                    vertical-align: middle;
+                }
+                .latest-news .section-container,
+                .shop .section-container {
+                    position: relative;
+                }
+                /* Pagination Dots */
+                .pagination-dots {
+                      position: absolute;   /* pull out of normal flow */
+                      display: flex;
+                      gap: 8px;
+                      padding: 0;
+                      margin: 0;
+                }
+
+                .pagination-dot {
+                    width: 16px;
+                    height: 16px;
+                    border: none;
+                    cursor: pointer;
+                    background-color:white;
+                    background-size: cover;
+                    background-position: center;
+                    transition: background-color 0.3s ease;
+                }
+                .pagination-dot.active {
+                    background-image: url('/Elements.png');
+                    
+                }
+
+                .pagination-dot.inactive {
+                    background-image: url('/Elements2.png');
+                }
+
+                
+
+                .shop .pagination-dot.active {
+                    background-image: url('/Elements.png');
+                }
+
+                .shop .pagination-dot.inactive {
+                    background-image: url('/Elements2.png');
+                }
+                .latest-news .pagination-dots {
+                    top: 1.2rem;    /* adjust to taste */
+                    right: 1.15rem;    /* adjust to taste */
+                }
+
+                  /* — Shop: centered under the grid — */
+                 .shop .pagination-dots {
+                     top: 1.2rem;          /* pull it below the grid */
+                     right: 88%;                /* start at 50% */
+    
+                }
+                @media (max-width: 767px) {
+                  .latest-news .pagination-dots {
+                     top: 1.2rem;    /* adjust to taste */
+                     right: 2rem; 
+                  }
+                  .shop .pagination-dots {
+                      top: 1.2rem;          /* pull it below the grid */
+                      right: 1.5rem;
+                      
+                  }
+                   .latest-news .section-title {
+                       position: relative;    /* adjust to taste */
+                       right: -1rem;
+                   }
+                    .shop .section-title {
+                       position: relative;    /* adjust to taste */
+                       right: -0.5rem;
+                   }
+                
+                }
+                /* Discount Banner */
+                .discount-banner {
+                    background-color: black;
+                    color: white;
+                    text-align: center;
+                    padding: 0.5rem;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.3rem;
+                    position: relative;
+                }
+
+                .discount-banner .discount-icon {
+                    display:flex;
+                    align-items:center;
+                }
+
+                .discount-close {
+                    position: relative;
+                    right: -2rem;
+                    background: none;
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                    font-size: 18px;
+                    padding: 0.2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .discount-close:hover {
+                    color: #ccc;
                 }
 
                 /* Header Styles */
-                .app-header {
-                    background-color: var(--secondary-bg);
-                    padding: 1rem 2rem;
-                    border-bottom: 1px solid var(--border-color);
+                .header {
+                    background-color: white;
+                    border-bottom: 1px solid #e0e0e0;
+                    padding: 0.8rem 0;
+                    position: sticky;
+                    top: 0;
+                    z-index: 1000;
                 }
 
                 .header-content {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    max-width: 1800px;
+                    max-width: 1400px;
                     margin: 0 auto;
-                }
-                
-                .logo-container {
+                    padding: 0 1rem;
                     display: flex;
+                    justify-content: space-between;
                     align-items: center;
-                    gap: 1rem;
+                    background-color: white;
+                    position: relative;
                 }
 
-                .logo-img {
-                    height: 40px;
-                    border-radius: 4px;
-                }
-
-                .logo-title {
-                    margin: 0;
-                    font-size: 1.75rem;
+                .logo {
+                    font-size: 1.4rem;
                     font-weight: bold;
-                    color: var(--main-red);
-                    text-transform: uppercase;
-                    font-family: 'League Gothic', Impact, sans-serif;
+                    color: #000;
+                    text-decoration: none;
+                    background-color: white;
+                    flex: 1;
+                    margin-left: 0.5rem;
                 }
 
                 .desktop-nav {
-                    display: none; /* Hidden on mobile */
-                }
-                
-                .header-search-container {
-                     display: none; /* Hidden on mobile */
+                    display: flex;
+                    gap: 2rem;
+                    align-items:center;
+                    background-color: white;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 10;
                 }
 
-                .hamburger-btn {
+                .nav-link {
                     background: none;
                     border: none;
-                    color: var(--text-light);
-                    font-size: 2rem;
+                    color: Black;
+                    background-color: white;
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    padding: 0.5rem 0;
+                    font-weight: 600px;
+                    transition: color 0.3s;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    display: inline-flex;
+                    cursor: pointer;
+                    white-space: nowrap;
+                }
+                    
+
+                .nav-link img {
+                    display: inline-block;
+                    width: 1rem;
+                    height: auto;
+                    margin: 0;
+                }
+
+                .nav-link:hover {
+                    color: #000;
+                    background-color: white;
+                }
+
+                .nav-link1.no-underline {
+                    text-decoration: none;
+                }
+
+                @media (max-width: 768px) {
+                    .header-right {
+                        display: none;
+                    }
+                }
+
+                .header-right {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.2rem;
+                    background-color: white;
+                    flex: 1;
+                    justify-content: flex-end;
+                }
+
+                .header-icon {
+                    color: #333;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    transition: background-color 0.3s;
+                }
+
+                .header-icon:hover {
+                    background-color: #f5f5f5;
+                }
+
+                .desktop-only {
+                    display: inline-flex;
+                }
+
+                @media (max-width: 768px) {
+                    .desktop-only {
+                        display: none !important;
+                    }
+                }
+
+                .mobile-menu-btn {
+                    background: none;
+                    border: none;
+                    color: #333;
                     cursor: pointer;
                     padding: 0.5rem;
                 }
 
-                /* Mobile Menu Styles */
+                /* Mobile Menu */
                 .mobile-menu {
-                    position: absolute;
-                    top: 74px; /* Height of the header */
+                    position: fixed;
+                    top: 0;
                     left: 0;
                     right: 0;
-                    background: var(--secondary-bg);
-                    border-bottom: 1px solid var(--border-color);
-                    z-index: 1000;
-                    padding: 1.5rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-                
-                .mobile-nav {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-
-                .mobile-search-container {
-                    display: flex;
-                    gap: 0.5rem;
-                    margin-top: 1rem;
-                }
-
-                /* Common Nav Link Styles */
-                .nav-link {
-                    color: var(--text-light);
-                    padding: 0.75rem 1rem;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    background: transparent;
-                    border: none;
-                    text-decoration: none;
-                    text-align: left;
-                    transition: background-color 0.2s;
-                }
-
-                .nav-link:hover {
-                    background-color: var(--tertiary-bg);
-                }
-
-                /* Search Input and Button Styles */
-                .search-input {
-                    padding: 0.75rem 1rem;
-                    background: var(--tertiary-bg);
-                    border: 1px solid #444;
-                    border-radius: 4px;
-                    color: var(--text-light);
-                    font-size: 1rem;
-                    flex-grow: 1;
-                }
-
-                .search-btn {
-                    padding: 0.75rem 1.5rem;
-                    background: var(--main-red);
-                    color: var(--text-light);
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    transition: background-color 0.2s;
-                }
-                .search-btn:hover {
-                    background-color: #e52d4a;
-                }
-
-                /* Main Content Area */
-                .main-content {
+                    bottom: 10;
+                    background-color: white;
+                    z-index: 2000;
                     padding: 2rem;
-                    max-width: 1800px;
-                    margin: 0 auto;
+                    display: flex;
+                    flex-direction: column;
                 }
 
-                /* Latest Videos Section */
-                .latest-videos-section {
-                    margin-bottom: 2rem;
-                }
-                
-                .section-header {
+                .mobile-menu-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 1.5rem;
-                }
-                
-                .section-title {
-                    margin: 0;
-                    font-size: 1.75rem;
-                    font-weight: bold;
+                    margin-bottom: 2rem;
                 }
 
-                .view-all-btn {
-                    background: transparent;
-                    color: var(--main-red);
-                    border: none;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    font-weight: 600;
-                }
-                
-                .videos-carousel {
-                    overflow: hidden;
-                    position: relative;
-                }
-
-                .videos-track {
-                    display: flex;
-                    gap: 1.5rem;
-                    /* Animation for continuous scroll */
-                    animation: scroll 40s linear infinite;
-                    width: fit-content;
-                }
-
-                @keyframes scroll {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-
-                .video-card {
-                    background: var(--tertiary-bg);
-                    border-radius: 8px;
-                    overflow: hidden;
-                    cursor: pointer;
-                    transition: transform 0.2s;
-                    min-width: 280px;
-                    max-width: 320px;
-                    flex-shrink: 0;
-                    text-decoration: none;
-                    color: var(--text-light);
-                }
-                .video-card:hover {
-                    transform: translateY(-5px);
-                }
-                .video-card-image-container {
-                    position: relative;
-                }
-                .video-card-image {
-                    width: 100%;
-                    height: 180px;
-                    object-fit: cover;
-                    display: block;
-                }
-                .video-card-duration {
-                    position: absolute;
-                    bottom: 8px;
-                    right: 8px;
-                    background: rgba(0,0,0,0.8);
+                .mobile-menu-header .logo {
                     color: white;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                }
-                .video-card-content {
-                    padding: 1rem;
-                }
-                .video-card-content h3 {
-                    margin: 0 0 0.5rem 0;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    line-height: 1.3;
-                }
-                .video-card-content p {
-                    margin: 0;
-                    font-size: 0.8rem;
-                    color: var(--text-dark);
                 }
 
-                /* Main Grid Layout */
-                .main-grid {
-                    display: grid;
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                /* Merch Shop Card */
-                .merch-card {
-                    background: var(--main-red);
-                    padding: 2rem;
-                    border-radius: 8px;
-                }
-                .merch-card .tag {
-                    margin: 0 0 0.5rem 0;
-                    font-size: 1rem;
-                    font-weight: 600;
-                }
-                .merch-card h3 {
-                    margin: 0 0 1rem 0;
-                    font-size: 2rem;
-                    font-weight: bold;
-                }
-                .merch-card p {
-                    margin: 0 0 1.5rem 0;
-                    font-size: 1rem;
-                    opacity: 0.9;
-                }
-                .merch-card .shop-now-btn {
-                    background: var(--text-light);
-                    color: var(--main-red);
-                    border: none;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    font-weight: 600;
-                }
-
-                /* Content Grid (Wrestlemania, etc.) */
-                .content-grid {
-                    display: grid;
-                    grid-template-columns: 1fr;
+                .mobile-nav {
+                    display: flex;
+                    flex-direction: column;
                     gap: 1.5rem;
+                    align-items:center;
+                    background-color: white;
+                    color: white;
                 }
-                
-                .content-card {
-                    background: var(--secondary-bg);
-                    border-radius: 8px;
-                    overflow: hidden;
-                    border: 1px solid var(--border-color);
-                    display: flex;
-                    flex-direction: column;
-                }
-                .content-card-image-container {
-                    height: 200px;
-                    background-color: var(--tertiary-bg);
-                }
-                .content-card-image {
+
+                .mobile-nav .nav-link {
+                    font-size: 1.1rem;
+                    padding: 1.2rem 1rem;
+                    border-bottom: white;
+                    text-align: center;
+                    align-items:center;
+                    justify-content: center
+                    color: black;
                     width: 100%;
-                    height: 100%;
-                    object-fit: cover; /* This makes the image cover the container */
-                }
-                .content-card-text {
-                    padding: 1.5rem;
-                }
-                .content-card-text h4 {
-                    margin: 0 0 0.5rem 0;
-                    font-size: 1.25rem;
-                }
-                .content-card-text p {
-                    margin: 0;
-                    font-size: 1rem;
-                    color: var(--text-dark);
+                    max-width: 300px;
+                    display:flex;
+                    transition: background-color 0.3s;
+                    margin:0;
                 }
 
-                /* Sidebar */
-                .sidebar {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 2rem;
-                }
-                .event-preview-card {
-                    background: var(--main-red);
-                    padding: 1.5rem;
-                    border-radius: 8px;
-                }
-                .event-preview-card .tag {
-                    margin: 0 0 0.5rem 0;
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                }
-                .event-preview-card h3 {
-                    margin: 0;
-                    font-size: 1.25rem;
-                    font-weight: bold;
+                .close-btn {
+                    background: none;
+                    border: none;
+                    color: #333;
+                    cursor: pointer;
+                    padding: 0.5rem;
                 }
 
-                .latest-news-card {
-                    background: var(--secondary-bg);
-                    padding: 1.5rem;
-                    border-radius: 8px;
-                    border: 1px solid var(--border-color);
-                }
-                .latest-news-card h3 {
-                    margin: 0 0 1rem 0;
-                }
-                .news-items-container {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-                .news-item {
-                    background: var(--tertiary-bg);
-                    padding: 1rem;
-                    border-radius: 4px;
-                    border-left: 3px solid var(--main-red);
-                }
-                .news-item h4 {
-                    margin: 0 0 0.25rem 0;
-                    font-size: 1rem;
-                }
-                .news-item p {
-                    margin: 0;
-                    font-size: 0.8rem;
-                    color: var(--text-dark);
-                }
-
-                .social-links {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 1rem;
-                }
-                .social-link {
-                    padding: 1rem;
-                    border-radius: 8px;
+                /* Hero Section */
+                .hero {
+                    background: #000;
+                    padding: 2rem 0;
                     text-align: center;
-                    text-decoration: none;
-                    color: var(--text-light);
+                    position: relative;
                 }
-                .social-link.facebook { background: #1877f2; }
-                .social-link.youtube { background: #ff0000; }
-                .social-link.instagram { background: #e4405f; }
-                .social-link-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-                .social-link-title { margin: 0; font-size: 0.8rem; font-weight: 600; }
-                .social-link-subtitle { margin: 0; font-size: 0.7rem; opacity: 0.8; }
 
-                /* Footer */
-                .app-footer {
-                    background: var(--primary-bg);
-                    padding: 3rem 2rem;
-                    border-top: 1px solid var(--border-color);
-                    margin-top: 3rem;
-                }
-                .footer-content {
-                    max-width: 1800px;
+                .hero-content {
+                    max-width: 1400px;
                     margin: 0 auto;
+                    padding: 0 1rem;
                 }
-                .footer-brand h3 {
-                     margin: 0 0 1rem 0;
-                     font-size: 1.5rem;
-                     color: var(--main-red);
+
+                .hero-logo {
+                    width: 100%;
+                    max-width: 800px;
+                    height: 400px;
+                    margin: 0 auto;
+                    background-color: black;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #666;
+                    font-size: 1rem;
                 }
-                .footer-brand p {
-                     margin: 0;
-                     color: var(--text-dark);
-                     line-height: 1.5;
+
+                .hero-logo img {
+                    width: 100%;
+                    height: 76%;
+                    display:block;
+                    object-fit: cover;
+                    object-position: center;
                 }
-                .footer-copyright {
-                    border-top: 1px solid var(--border-color);
-                    margin-top: 2rem;
-                    padding-top: 2rem;
-                    text-align: center;
-                    color: var(--text-muted);
+
+                .tickets-btn {
+                    position: absolute;
+                    top: 2rem;
+                    right: 8.8rem;
+                    background-color: #fff;
+                    color: #000;
+                    border: none;
+                    padding: 0.7rem 1.2rem;
+                    border-radius: 4px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: transform 1s;
                     font-size: 0.9rem;
                 }
 
-
-                /* --- Media Queries for Responsive Design --- */
-
-                /* Tablet and smaller desktops */
-                @media (min-width: 768px) {
-                    .content-grid {
-                        grid-template-columns: repeat(2, 1fr);
-                    }
+                .tickets-btn:hover {
+                    transform: translateY(-1px);
                 }
 
-                /* Large desktops */
-                @media (min-width: 1024px) {
-                    .hamburger-btn {
+                /* Latest News Section */
+                .latest-news {
+                    padding: 3rem 0;
+                    background-color: white;
+                }
+
+                .section-container {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 0 1rem;
+                }
+
+                .section-title {
+                    font-size: 1.8rem;
+                    margin-bottom: 2rem;
+                    color: #000;
+                    font-weight: 600;
+                    gap: 0.5rem;
+                }
+
+                .section-arrow {
+                    font-size: 1.2rem;
+                    color: #666;
+                    cursor: pointer;
+                    transition: color 0.3s;
+                }
+
+                .news-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1.5rem;
+                    grid-auto-flow: row;
+                }
+
+                .news-card {
+                    background-color: transparent;
+                    border-radius: 0px;
+                    overflow: hidden;
+                    box-shadow: none;
+                    transition: transform 0.3s, box-shadow 0.3s;
+                    cursor: pointer;
+                    position: relative;
+                }
+
+                .news-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 4px 16px rgba(255, 255,255,1);
+                }
+
+                .news-image {
+                    width: 100%;
+                    height: 420px;
+                    object-fit: cover;
+                    background-color: transparent;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #999;
+                    font-size: 0.85rem;
+                    border-bottom: none;
+                }
+
+                .news-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+                .news-content {
+                    padding: 1.2rem;
+                }
+
+                .news-label {
+                    background-color: white;
+                    color: black;
+                    padding: 0.25rem 0.6rem;
+                    border-radius: 12px;
+                    font-size: 0.75rem;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-bottom: 0.7rem;
+                    text-transform: uppercase;
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+                    z-index: 10;
+                }
+
+                .news-title {
+                    font-size: 1rem;
+                    margin: 0;
+                    line-height: 1.4;
+                    color: #000;
+                    font-weight: 600;
+                }
+
+                /* Shop Section */
+                .shop {
+                    padding: 3rem 0;
+                    background-color: white;
+                }
+
+                .shop .section-title {
+                    color: #000;
+                }
+
+                .shop-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 2rem;
+                    margin-bottom: 3rem;
+                }
+
+                .product-card {
+                    background-color: #fff;
+                    border: 1px solid white;
+                    border-radius: 0px;
+                    overflow: hidden;
+                    transition: transform 0.3s, box-shadow 0.3s;
+                    cursor: pointer;
+                }
+
+                .product-card:hover {
+                    transform: translateY(-4px);
+                }
+
+                .product-image {
+                    width: 100%;
+                    height:400px;
+                    background-color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #999;
+                    position: relative;
+                    border-bottom: 1px solid white;
+                    font-size: 0.85rem;
+                }
+
+                .product-image img {
+                    width:100%;
+                    height:100%;
+                    object-fit:cover;
+                    object-position: center;
+                }
+
+                .hot-badge {
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+                    background-color: white;
+                    color: black;
+                    padding: 0.3rem 0.7rem;
+                    border-radius: 12px;
+                    font-size: 0.75rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+
+                .product-info {
+                    padding: 1.2rem;
+                }
+
+                .product-title {
+                    font-size: 1rem;
+                    margin-bottom: 0.7rem;
+                    line-height: 1.4;
+                    color: #000;
+                    font-weight: 500;
+                }
+
+                .product-price {
+                    color: #000;
+                    font-weight: 600;
+                    font-size: 1.1rem;
+                }
+
+                /* Brand Highlights */
+                .brand-highlights {
+                    padding: 3rem 0;
+                    background-color: white;
+                }
+
+                .brand-highlights .section-title {
+                    color: #000;
+                    text-align: center;
+                }
+
+                .brand-subtitle {
+                    color: #666;
+                    text-align: center;
+                    margin-bottom: 2rem;
+                    font-size: 1rem;
+                }
+
+                .highlights-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 2rem;
+                    margin-top: 2rem;
+                }
+
+                .highlight-card {
+                    background-color: transparent;
+                    border: none;
+                    border-radius: 0;
+                    padding: 0;
+                    flex-direction: column;
+                    display:flex;
+                    transition: transform 0.3s, box-shadow 0.3s;
+                    cursor: pointer;
+                }
+
+                .highlight-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                }
+
+                .highlight-icon {
+                    width: 100%;
+                    aspect-ratio: 1/1;
+                    overflow: hidden;
+                    display: block;
+                    margin: 0;
+                }
+
+                .highlight-icon img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position:center;
+                    display: block;
+                }
+
+                /* Footer */
+                .footer {
+                    background-color: black;
+                    padding: 3rem 0 1rem;
+                    color: black;
+                }
+
+                .footer-content {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 0 1rem;
+                }
+
+                .footer-nav {
+                    display: flex;
+                    flex-direction: column;
+                    background:black;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                    align-items: center;
+                }
+
+                .footer-nav .nav-link1 {
+                    color: #ccc;
+                    font-size: 0.9rem;
+                    padding: 0.7rem 0;
+                    width: 100%;
+                    text-align: center;
+                    background-color: black;
+                    transition: color 0.3s, background-color 0.3s;
+                    text-decoration: none;
+                }
+
+                .footer-nav .nav-link1:hover {
+                    color: #fff;
+                    background-color: black;
+                    text-decoration: none;
+                }
+
+                .social-icons {
+                    display: flex;
+                    justify-content: center;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                }
+
+                .social-icon {
+                    width: 40px;
+                    height: 40px;
+                    background-color: #333;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    text-decoration: none;
+                    transition: background-color 0.3s;
+                    font-size: 1.1rem;
+                    background-color: black;
+                }
+
+                .social-icon:hover {
+                    background-color: #555;
+                }
+
+                .footer-text {
+                    color: #666;
+                    font-size: 0.85rem;
+                    text-align: center;
+                }
+
+                a {
+                    text-decoration:none;
+                }
+
+                /* Responsive Design */
+                @media (min-width: 768px) {
+                    .mobile-menu-btn {
                         display: none;
                     }
-                    .desktop-nav {
+
+                    .desktop-nav, .header-right {
                         display: flex;
-                        align-items: center;
+                    }
+
+                    .tickets-btn {
+                        position: absolute;
+                        top: 2rem;
+                        right: 8.8rem;
+                        margin-top: 0;
+                    }
+
+                    .hero-content {
+                        padding: 0 2rem;
+                    }
+
+                    .footer-nav {
+                        flex-direction: row;
+                        justify-content: center;
+                        flex-wrap: wrap;
+                        gap: 2.5rem;
+                        background-color: black;
+                    }
+
+                    .footer-nav .nav-link1 {
+                        width: auto;
+                        border-bottom: none;
+                        padding: 0.5rem 0;
+                        background-color: black;
+                        text-decoration: none;
+                    }
+
+                    .footer-nav .nav-link1:hover {
+                        background-color: black;
+                        color: #black;
+                        text-decoration: none;
+                    }
+                }
+                 /* Mobile-specific styles */
+                @media (max-width: 767px) {
+                    /* Latest News: 4 across on mobile */
+                    .latest-news .news-grid {
+                        display: flex;
+                        overflow-x: auto;
+                        scroll-behavior: smooth;
                         gap: 1rem;
-                        margin-left: 2rem;
+                        padding: 0 1rem;
+                        -webkit-overflow-scrolling: touch;
+                        scrollbar-width: none; /* Firefox */
+                        -ms-overflow-style: none; /* IE/Edge */
+
                     }
-                    .header-search-container {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                        margin-left: auto;
+                    .latest-news .news-grid::-webkit-scrollbar {
+                        display:none;
                     }
-                    .main-grid {
-                        grid-template-columns: 1fr 350px; /* Two columns for main content */
+                    
+                    .latest-news .news-card {
+                       flex: 0 0 280px; /* Fixed width, larger cards */
+                        min-width: 280px;
                     }
-                    .content-grid {
+                    
+                    .latest-news .news-image {
+                        height: 350px; /* Smaller height for mobile 4-column layout */
+                    }
+                    
+                    .latest-news .news-label {
+                        font-size: 0.75rem;
+                        padding: 0.25rem 0.6rem;
+                        top: 12px;
+                        left: 12px;
+                    }
+
+                    /* Shop: 2 across on mobile */
+                    .shop .shop-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 1rem;
+                        padding: 0 0.5rem;
+                    }
+
+                    .latest-news {
+                        border-bottom: none;
+                        margin-bottom: 0;
+                    }
+                       
+                    
+                    .brand-highlights {
+                        border-top: none;
+                        margin-top: 0;
+                    }
+                    
+                    .shop .product-card {
+                        min-width: 0; /* Allows items to shrink */
+                    }
+                    
+                    .shop .product-image {
+                        height: 200px; /* Appropriate height for mobile 2-column layout */
+                    }
+                    
+                    .shop .hot-badge {
+                        font-size: 0.65rem;
+                        padding: 0.2rem 0.5rem;
+                        top: 8px;
+                        left: 8px;
+                    }
+                    
+                    .shop .product-info {
+                        padding: 0.8rem;
+                    }
+                    
+                    .shop .product-title {
+                        font-size: 0.85rem;
+                        line-height: 1.2;
+                        margin-bottom: 0.5rem;
+                    }
+                    
+                    .shop .product-price {
+                        font-size: 0.95rem;
+                    }
+                }
+                @media (max-width: 767px) and (orientation: landscape) {
+                    .shop .product-image {
+                        height: 380px; /* Appropriate height for mobile 2-column layout */
+                    }
+                }
+                @media (min-width: 768px) and (max-width: 1023px) {
+                    /* Tablet styles */
+                    .news-grid {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+
+                    .shop-grid {
                         grid-template-columns: repeat(3, 1fr);
                     }
                 }
+                @media (min-width: 1024px) {
+                    .news-grid {
+                        grid-template-columns: repeat(4, 1fr);
+                    }
+
+                    .shop-grid {
+                        grid-template-columns: repeat(4, 1fr);
+                    }
+
+                    .highlights-grid {
+                        grid-template-columns: repeat(4, 1fr);
+                    }
+
+                    .highlights-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                        gap: 1.5rem;
+                    }
+                       
+}              
+                }
             `}</style>
 
-            <div className="app-container">
-                {/* Header */}
-                <header className="app-header">
-                    <div className="header-content">
-                        <div className="logo-container">
-                            <img src="RBID.jpg" alt="Burn It Down Logo" className="logo-img" />
-                            <h1 className="logo-title">BURNITDOWN</h1>
-                        </div>
-
-                        {/* Desktop Navigation and Search */}
-                        <NavLinks />
-                        <div className="header-search-container">
-                            <input
-                                type="text"
-                                placeholder="Search Videos..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                                className="search-input"
-                            />
-                            <button onClick={handleSearch} className="search-btn">Search</button>
-                        </div>
-
-                        {/* Mobile Hamburger Button */}
-                        <button className="hamburger-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                            &#9776;
+            <div className="container" id="home">
+                {/* Discount Banner */}
+                {isDiscountVisible && (
+                    <div className="discount-banner">
+                        <span className="discount-icon"><img src="ticket-percent-white.svg"/></span>
+                        10% off store—Limited time!
+                        <button 
+                            className="discount-close"
+                            onClick={() => setIsDiscountVisible(false)}
+                        >
+                            ✕
                         </button>
+                    </div>
+                )}
+
+                {/* Header */}
+                <header className="header">
+                    <div className="header-content">
+                        <button 
+                            className="mobile-menu-btn"
+                            onClick={() => setIsMobileMenuOpen(true)}
+                        >
+                            <MenuIcon />
+                        </button>
+                        <p className="logo">BURNITDOWNYT</p>
+                        
+                        <NavLinks />
+                        
+                        <div className="header-right">
+                            <div className="user-icon desktop-only">
+                                <UserIcon />
+                            </div>
+                            <div className="header-icon">
+                                <ShoppingBagIcon />
+                            </div>
+                        </div>
                     </div>
                 </header>
 
                 {/* Mobile Menu */}
                 {isMobileMenuOpen && (
                     <div className="mobile-menu">
-                        <NavLinks isMobile={true} />
-                        <div className="mobile-search-container">
-                             <input
-                                type="text"
-                                placeholder="Search..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="search-input"
-                            />
-                            <button onClick={handleSearch} className="search-btn">Search</button>
+                        <div className="mobile-menu-header">
+                            <span className="logo">BURNITDOWNYT</span>
+                            <button 
+                                className="close-btn"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                <CloseIcon />
+                            </button>
                         </div>
+                        <NavLinks isMobile={true} onItemClick={scrollToSection} />
                     </div>
                 )}
 
-                <main className="main-content">
-                    {/* Latest Videos Section */}
-                    <section className="latest-videos-section">
-                        <div className="section-header">
-                            <h2 className="section-title">Latest Videos</h2>
-                            <button className="view-all-btn">View All</button>
+                {/* Hero Section */}
+                <section ref={homeRef} className="hero">
+                    <div className="hero-content">
+                        <div className="hero-logo">
+                            <img className="hero-logo img" src="MANIA-HOMECOVER.jpg"/>
                         </div>
-                        {loading ? (
-                            <div>Loading...</div>
-                        ) : (
-                            <div className="videos-carousel">
-                                <div className="videos-track">
-                                    {[...newsData, ...newsData].map((item, index) => (
-                                        <VideoCard key={index} data={item} />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </section>
-
-                    {/* Main Content Grid */}
-                    <div className="main-grid">
-                        {/* Left Column */}
-                        <div className="left-column">
-                            <div className="merch-card">
-                                <p className="tag">MERCH SHOP</p>
-                                <h3>Gear Up Like a Champion</h3>
-                                <p>Browse authentic WWE merch, apparel, and fan gear built for true super-fans.</p>
-                                <button className="shop-now-btn">Shop Now</button>
-                            </div>
-
-                            <div className="content-grid" style={{marginTop: '2rem'}}>
-                                <div className="content-card">
-                                    <div className="content-card-image-container">
-                                        <img src="WW.png" alt="WrestleMania" className="content-card-image" />
-                                    </div>
-                                    <div className="content-card-text">
-                                        <h4>WrestleMania</h4>
-                                        <p>Relive the grandest stage of them all</p>
-                                    </div>
-                                </div>
-                                <div className="content-card">
-                                    <div className="content-card-image-container">
-                                        <img src="M.png" alt="Money in the Bank" className="content-card-image" />
-                                    </div>
-                                    <div className="content-card-text">
-                                        <h4>Money in the Bank</h4>
-                                        <p>Catch up on all the ladder match action</p>
-                                    </div>
-                                </div>
-                                <div className="content-card">
-                                    <div className="content-card-image-container">
-                                        <img src="Champ.png" alt="Championship Highlights" className="content-card-image" />
-                                    </div>
-                                    <div className="content-card-text">
-                                        <h4>Championship Highlights</h4>
-                                        <p>Latest championship match highlights and updates</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right Sidebar */}
-                        <aside className="sidebar">
-                            <div className="event-preview-card">
-                                <p className="tag">EVENT PREVIEW FOR 7/14</p>
-                                <h3>What will be the fallout from the latest championship match?</h3>
-                            </div>
-                            <div className="latest-news-card">
-                                <h3>LATEST NEWS</h3>
-                                <div className="news-items-container">
-                                    <div className="news-item">
-                                        <h4>Championship Match Results</h4>
-                                        <p>2 hours ago</p>
-                                    </div>
-                                    <div className="news-item">
-                                        <h4>Upcoming Events Schedule</h4>
-                                        <p>4 hours ago</p>
-                                    </div>
-                                    <div className="news-item">
-                                        <h4>Behind the Scenes Coverage</h4>
-                                        <p>6 hours ago</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="social-links">
-                                <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" className="social-link facebook">
-                                    <div className="social-link-icon"><img src="facebook.png"/></div>
-                                    <p className="social-link-title">Facebook</p>
-                                </a>
-                                <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" className="social-link youtube">
-                                    <div className="social-link-icon"><img src="youtube.png"/></div>
-                                    <p className="social-link-title">YouTube</p>
-                                </a>
-                                <a href=" https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" className="social-link instagram">
-                                    <div className="social-link-icon"><img src="instagram.png"/></div>
-                                    <p className="social-link-title">Instagram</p>
-                                </a>
-                            </div>
-                        </aside>
+                        <button className="tickets-btn">Tickets</button>
                     </div>
-                </main>
+                </section>
+
+                {/* Latest News Section */}
+                <section ref={latestNewsRef} className="latest-news" id="news">
+                    <div className="section-container">
+                        <h2 className="section-title">Latest News</h2>
+                        
+                        {/* News Pagination Dots */}
+                        <div className="pagination-dots">
+                            {Array.from({ length: newsPages }).map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => scrollToNewsPage(index)}
+                                    className={`pagination-dot ${newsCurrentIndex === index ? 'active' : 'inactive'}`}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="news-grid">
+                            {getCurrentNewsItems().map((item) => (
+                                <div key={item.id} className="news-card">
+                                    <span className="news-label">{item.label}</span>
+                                    <div className="news-image">
+                                        <a href={item.link}><img src={item.image} alt="News" sr/></a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Shop Section */}
+                <section ref={shopRef} className="shop" id="shop">
+                    <div className="section-container">
+                        <h2 className="section-title">Shop</h2>
+                        
+                        {/* Shop Pagination Dots */}
+                        <div className="pagination-dots">
+                            {Array.from({ length: shopPages }).map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => scrollToShopPage(index)}
+                                    className={`pagination-dot ${shopCurrentIndex === index ? 'active' : 'inactive'}`}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="shop-grid">
+                            {getCurrentShopItems().map((item) => (
+                                <div key={item.id} className="product-card">
+                                    <div className="product-image">
+                                        {item.badge && <span className="hot-badge">{item.badge}</span>}
+                                        <a href={item.link} target="_blank" rel="noopener noreferrer"><img src={item.image} alt={item.title}/></a>
+                                    </div>
+                                    {item.title !== "View More Belts" && (
+                                        <div className="product-info">
+                                            <h3 className="product-title">{item.title}</h3>
+                                            <div className="product-price">{item.price}</div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Brand Highlights */}
+                <section className="brand-highlights">
+                    <div className="section-container">
+                        <h2 className="section-title">Brand Highlights</h2>
+                        <p className="brand-subtitle">
+                            Join our WWE 2K community group and explore some of our top brand highlights
+                        </p>
+                        <div className="highlights-grid">
+                            <div className="highlight-card">
+                                <div className="highlight-icon">
+                                    <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><img src="2k-logo.jpg" alt="2K Logo"/></a>
+                                </div>
+                            </div>
+                            <div className="highlight-card">
+                                <div className="highlight-icon">
+                                    <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" target="_blank" rel="noopener noreferrer"><img src="Youtube_bl.png" alt="YouTube"/></a>
+                                </div>
+                            </div>
+                            <div className="highlight-card">
+                                <div className="highlight-icon">
+                                    <a href="https://www.instagram.com/stories/highlights/18026461703054293/" target="_blank" rel="noopener noreferrer"><img src="W.png" alt="WWE"/></a>
+                                </div>
+                            </div>
+                            <div className="highlight-card">
+                                <div className="highlight-icon">
+                                    <a href="Media-kit.pdf" download><img src="Mediakit.png" alt="Media Kit"/></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Footer */}
-                <footer className="app-footer">
+                <footer className="footer">
                     <div className="footer-content">
-                         <div className="footer-brand">
-                            <h3 font-family = "League Gothic, Impact, sans-serif">BURNITDOWN</h3>
-                            <p>Your ultimate destination for wrestling entertainment, news, and exclusive content.</p>
+                        <nav className="footer-nav">
+                            <button onClick={() => scrollToSection(homeRef)} className="nav-link1">Home</button>
+                            <button onClick={() => scrollToSection(shopRef)} className="nav-link1">Shop</button>
+                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><button className="nav-link1">2K Community</button></a>
+                            <button onClick={handleMediaKitDownload} className="nav-link1">Media kit</button>
+                            <Link to="/Contact"><button onClick={() => console.log('Contact Us clicked')} className="nav-link1">Contact Us</button></Link>
+                        </nav>
+                        
+                        <div className="social-icons">
+                            <a href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="instagram1.png"/></a>
+                            <a href="https://www.facebook.com/share/g/1BpZVnNsqr/?mibextid=wwXIfr" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="facebook1.png"/></a>
+                            <a href="https://youtube.com/@burnitdownyt?si=ogbNfYLps54zRZQ1" className="social-icon" target="_blank" rel="noopener noreferrer"><img src="youtube1.png"/></a>
                         </div>
-                        <div className="footer-copyright">
-                            &copy; 2025 Burn It Down. All rights reserved.
-                        </div>
+                        
+                        <p className="footer-text">© 2025 BURNITDOWNYT. All rights reserved.</p>
                     </div>
                 </footer>
             </div>
