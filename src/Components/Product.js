@@ -75,8 +75,8 @@ const Product = () => {
     const product = {
         id: 'wwe-undisputed-cena',
         name: "Tray Table",
-        price: 199.00,
-        originalPrice: 400.00,
+        price: 1099.50,
+        originalPrice: 2199.00,
         images: [
             "WWEBELTCENA.png",
             "contactformoreimages.png",
@@ -91,41 +91,41 @@ const Product = () => {
     const relatedProducts = [
         {
             id: 1,
-            name: "Loveseat Sofa",
-            price: 199.00,
-            originalPrice: 400.00,
+            name: "WWE Winged Eagle Championship Belt",
+            price: 899.50,
+            originalPrice: 1799.00,
             image: "WIGNEDEAGLE_.png",
             badge: "NEW",
             discount: "-10%"
         },
         {
             id: 2,
-            name: "Table Lamp",
-            price: 24.99,
+            name: "WWE Big Gold World Heavyweight Championship",
+            price: 1799.00,
             image: "WORLDTITLEE.png"
         },
         {
             id: 3,
-            name: "Beige Table Lamp",
-            price: 24.99,
+            name: "WWE New World Heavyweight Championship Belt",
+            price: 1999.00,
             image: "WORLDTITLE.png"
         },
         {
             id: 4,
-            name: "Bamboo basket",
-            price: 24.99,
+            name: "WWE New NXT Championship",
+            price: 1199.00,
             image: "NXTTITLE.png"
         },
         {
             id: 5,
-            name: "Bamboo basket",
-            price: 24.99,
+            name: "WWE Spinner Championship with Custom name plate",
+            price: 1699.00,
             image: "SPINNERBELTTT.png"
         },
         {
             id: 6,
-            name: "Bamboo basket",
-            price: 24.99,
+            name: "Roman Reigns Tribal Chief Poster Autograph 2025",
+            price: 699.00,
             image: "WWF-TITLEE.jpg"
         },
     ];
