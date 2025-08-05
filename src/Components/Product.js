@@ -828,7 +828,7 @@ const Product = () => {
                 .product-card {
                     flex: 0 0 250px;
                     background: white;
-                    border-radius: 8px;
+                    border-radius: 0px;
                     overflow: hidden;
                     cursor: pointer;
                     transition: transform 0.2s;
