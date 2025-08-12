@@ -11,6 +11,7 @@ const rooter = createBrowserRouter([
   {path:"/",element:<BIDapp/>},
   {path:"/Product",element:<Product/>},
   {path:"/Contact",element:<Contact/>},
+  {path:"/Product/:id",element:<Product/>},
 ])
 //<RouterProvider router={rooter}/>
 root.render(

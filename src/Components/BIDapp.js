@@ -30,30 +30,77 @@ const BIDapp = () => {
     
     // Shop data (using existing products)
     const shopItems = [
-        { id: 1, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
-        { id: 2, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
-        { id: 3, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
-        { id: 4, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
-        { id: 5, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
-        { id: 6, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
-        { id: 7, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
-        { id: 8, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
-        { id: 9, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
-        { id: 10, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
-        { id: 11, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
-        { id: 12, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" },
-        { id: 13, image: "WWEBELTCENA.png", title: "WWE Undisputed Championship with John Cena side plates", price: "$2199.00", badge: "HOT" },
-        { id: 14, image: "WIGNEDEAGLE_.png", title: "WWE Winged Eagle Championship Belt", price: "$1799.00", badge: "HOT" },
-        { id: 15, image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00" },
-        { id: 16, image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00" },
-        { id: 17, image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00" },
-        { id: 18, image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT" },
-        { id: 19, image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00" },
-        { id: 20, image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00" },
-        { id: 21, image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00" },
-        { id: 22, image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT" },
-        { id: 23, image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00" },
-        { id: 24, image: "morebeltsbutton.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"}
+        { id: 1, 
+            images: ["WWEBELTCENA.png", "/contactformoreimages.png"],
+            image: "WWEBELTCENA.png", 
+            title: "WWE Undisputed Championship with John Cena side plates", 
+            Probadge: "NEW",
+            disbadge: "-10%",
+            price: "$1979.10", 
+            originalPrice: "$2199.00",
+            badge: "HOT", 
+            link:`/product/1` 
+        },
+        { id: 2, 
+            images: [ "WIGNEDEAGLE_.png",  "/contactformoreimages.png" ],
+            image: "WIGNEDEAGLE_.png", 
+            title: "WWE Winged Eagle Championship Belt",
+            Probadge: "NEW",
+            disbadge: "-10%",
+            price: "$1619.10", 
+            originalPrice: "$1799.00",
+            badge: "HOT", 
+            link:`/product/2` },
+        { id: 3, 
+            images: [ "SPINNERBELTTT.png", "/contactformoreimages.png"],
+            image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate",
+             price: "$1699.00", link:`/product/3` },
+        { id: 4, 
+            images: ["WORLDTITLEE.png", "/contactformoreimages.png"],
+            image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship",  price: "$1799.00", link:`/product/4` },
+        { id: 5, images: ["UNDISPUTEDTITLE.png", "/contactformoreimages.png"],  image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate",  price: "$1699.00"   , link:`/product/5` },
+        { id: 6, images: ["WORLDTITLE.png",  "/contactformoreimages.png"], image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt",  price: "$1999.00", badge: "HOT", link:`/product/6` },
+        { id: 7, images: [ "CUSTOMSIDEPLATES.png",  "/contactformoreimages.png"],image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design",  price: "$349.00", link:`/product/7` },
+        { id: 8, images: [ "NXTTITLE.png",  "/contactformoreimages.png"], image: "NXTTITLE.png", title: "WWE New NXT Championship",  price: "$1199.00",   link:`/product/8` },
+        { id: 9, images: [ "smoking-skull-title.jpg",  "/contactformoreimages.png"], image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00", link:`/product/9` },
+        { id: 10, images: [ "WWF-TITLEE.jpg",  "/contactformoreimages.png"],image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025",  price: "$699.00", badge: "HOT",    link:`/product/10` },
+        { id: 11, images: [ "US-TITLEE.jpg",  "/contactformoreimages.png"],image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00",  link:`/product/11` },
+        { id: 12, image: "contactformoreimages.png", title: "View More Belts",  link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" },
+        { id: 13, 
+            images: ["WWEBELTCENA.png", "/contactformoreimages.png"],
+            image: "WWEBELTCENA.png", 
+            title: "WWE Undisputed Championship with John Cena side plates", 
+            Probadge: "NEW",
+            disbadge: "-10%",
+            price: "$1979.10", 
+            originalPrice: "$2199.00",
+            badge: "HOT", 
+            link:`/product/1` 
+        },
+        { id: 14, 
+            images: [ "WIGNEDEAGLE_.png",  "/contactformoreimages.png" ],
+            image: "WIGNEDEAGLE_.png", 
+            title: "WWE Winged Eagle Championship Belt",
+            Probadge: "NEW",
+            disbadge: "-10%",
+            price: "$1619.10", 
+            originalPrice: "$1799.00",
+            badge: "HOT", 
+            link:`/product/2` },
+        { id: 15, 
+            images: [ "SPINNERBELTTT.png", "/contactformoreimages.png"],
+            image: "SPINNERBELTTT.png", title: "WWE Spinner Championship with Custom name plate", price: "$1699.00", link:`/product/3` },
+        { id: 16, 
+            images: ["WORLDTITLEE.png", "/contactformoreimages.png"],
+            image: "WORLDTITLEE.png", title: "WWE Big Gold World Heavyweight Championship", price: "$1799.00", link:`/product/4` },
+        { id: 17, images: ["UNDISPUTEDTITLE.png", "/contactformoreimages.png"],  image: "UNDISPUTEDTITLE.png", title: "WWE Undisputed Championship with Custom name plate", price: "$1699.00"   , link:`/product/5` },
+        { id: 18, images: ["WORLDTITLE.png",  "/contactformoreimages.png"], image: "WORLDTITLE.png", title: "WWE New World Heavyweight Championship Belt", price: "$1999.00", badge: "HOT", link:`/product/6` },
+        { id: 19, images: [ "CUSTOMSIDEPLATES.png",  "/contactformoreimages.png"],image: "CUSTOMSIDEPLATES.png", title: "Custom WWE Side Plates of any WWE Superstar / Custom Design", price: "$349.00", link:`/product/7` },
+        { id: 20, images: [ "NXTTITLE.png",  "/contactformoreimages.png"], image: "NXTTITLE.png", title: "WWE New NXT Championship", price: "$1199.00",   link:`/product/8` },
+        { id: 21, images: [ "smoking-skull-title.jpg",  "/contactformoreimages.png"], image: "smoking-skull-title.jpg", title: "John Cena 2025 Farewell Tour Poster Autograph", price: "$599.00", link:`/product/9` },
+        { id: 22, images: [ "WWF-TITLEE.jpg",  "/contactformoreimages.png"],image: "WWF-TITLEE.jpg", title: "Roman Reigns Tribal Chief Poster Autograph 2025", price: "$699.00", badge: "HOT",    link:`/product/10` },
+        { id: 23, images: [ "US-TITLEE.jpg",  "/contactformoreimages.png"],image: "US-TITLEE.jpg", title: "WWE US Spinner Championship", price: "$1899.00", link:`/product/11` },
+        { id: 24, image: "contactformoreimages.png", title: "View More Belts", link: "https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr"}
     ];
     
     const newsPages = Math.ceil(newsItems.length / itemsPerPage);
@@ -154,10 +201,10 @@ const BIDapp = () => {
                 Home
             </button>
             <button onClick={() => onItemClick ? onItemClick(shopRef) : scrollToSection(shopRef)} className="nav-link ">
-                →Shop
+                <img src="arrow-right.svg" className="nav-arrow"/>Shop
             </button>
             <button onClick={() => onItemClick ? onItemClick(latestNewsRef) : scrollToSection(latestNewsRef)} className="nav-link">
-                →Latest News
+                <img src="arrow-right.svg" className="nav-arrow"/>Latest News
             </button>
             <button onClick={handleMediaKitDownload} className="nav-link">
                 Media Kit
@@ -214,10 +261,7 @@ const BIDapp = () => {
                      background-position: calc(100% + 4px) center;
                      background-size: 14px 14px;
 }
-                .nav-arrow {
-                    margin-right: -45px;
-                    vertical-align: middle;
-                }
+                 
                 .latest-news .section-container,
                 .shop .section-container {
                     position: relative;
@@ -379,24 +423,55 @@ const BIDapp = () => {
                     font-size: 0.9rem;
                     cursor: pointer;
                     padding: 0.5rem 0;
-                    font-weight: 600px;
+                    font-weight: 500;
                     transition: color 0.3s;
                     display: inline-flex;
                     align-items: center;
-                    gap: 4px;
+                    gap: 8px;
                     display: inline-flex;
                     cursor: pointer;
                     white-space: nowrap;
                 }
                     
-
+                .nav-arrow {
+                    width: 20px;            /* control arrow size */
+                    height: 20px;
+                    margin-right: -5px;      /* small gap between arrow and text */
+                    display: inline-block;
+                    vertical-align: middle; 
+                }
                 .nav-link img {
                     display: inline-block;
-                    width: 1rem;
-                    height: auto;
-                    margin: 0;
+                    width: 20px;
+                    height: 20px;
+                    margin: 0;              /* remove unexpected margins */
+                    vertical-align: middle;
                 }
+                @media (max-width: 767px) {
+  .nav-arrow,
+  .nav-link img {
+    width: 20px;
+    height: 20px;
+    margin-right: 0;
+  }
 
+  .mobile-nav .nav-link {
+    font-size: 1.1rem;
+    padding: 1.2rem 1rem;
+    border-bottom: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center; /* <-- make sure this has the semicolon */
+    color: black;
+    width: 100%;
+    font-weight: 500;
+    max-width: 300px;
+    display: flex;
+    transition: background-color 0.3s;
+    margin: 0;
+    gap: 6px;
+  }
+}
                 .nav-link:hover {
                     color: #000;
                     background-color: white;
@@ -406,12 +481,71 @@ const BIDapp = () => {
                     text-decoration: none;
                 }
 
-                @media (max-width: 768px) {
-                    .header-right {
-                        display: none;
-                    }
-                }
+                 @media (max-width: 767px) {
+  /* Hide desktop nav on mobile */
+  .desktop-nav {
+    display: none;
+  }
 
+  /* Make sure mobile menu button is visible and tappable */
+  .mobile-menu-btn {
+    display: block;
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1500;
+    color: black;       /* visible on white header */
+    font-size: 18px;
+    background: none;
+    border: none;
+    padding: 1rem;
+  }
+
+  /* Center the logo in the header */
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* so absolute children (icons) can be positioned */
+    padding: 0 2.5rem;  /* leave space for icons */
+  }
+
+  /* Keep header-right visible on mobile but only used for the shopping bag */
+  .header-right {
+    display: flex;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1500;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Hide desktop-only user icon on mobile (already has desktop-only class, but keep safe) */
+  .header-right .user-icon,
+  .user-icon.desktop-only {
+    display: none !important;
+  }
+
+  /* Style shopping bag button (so it looks like the screenshot) */
+  .header-icon {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+  }
+
+  /* Ensure mobile header logo text is centered and visible */
+  .logo {
+    margin: 20px;
+    text-align: left;
+    color: #000;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+}
                 .header-right {
                     display: flex;
                     align-items: center;
@@ -1002,6 +1136,7 @@ const BIDapp = () => {
                         height: 380px; /* Appropriate height for mobile 2-column layout */
                     }
                 }
+
                 @media (min-width: 768px) and (max-width: 1023px) {
                     /* Tablet styles */
                     .news-grid {
@@ -1145,12 +1280,22 @@ const BIDapp = () => {
                         </div>
 
                         <div className="shop-grid">
-                            {getCurrentShopItems().map((item) => (
+                            {(getCurrentShopItems() || []).map((item) => (
                                 <div key={item.id} className="product-card">
                                     <div className="product-image">
                                         {item.badge && <span className="hot-badge">{item.badge}</span>}
-                                        <a href={item.link} target="_blank" rel="noopener noreferrer"><img src={item.image} alt={item.title}/></a>
-                                    </div>
+                                        {/* Only "View More Belts" gets Instagram link, all other images use Link */}
+                {item.title === "View More Belts" && item.link === "" ? (
+                    <a href="https://www.instagram.com/burnitdownyt?igsh=MTExOGNwOHJhZWYyYQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
+                        <img src={item.image} alt={item.title}/>
+                    </a>
+                ) : (
+                    <Link to={item.link} state={{item}}>
+                        <img src={item.image} alt={item.title}/>
+                    </Link>
+                )}
+            </div>
+                                    
                                     {item.title !== "View More Belts" && (
                                         <div className="product-info">
                                             <h3 className="product-title">{item.title}</h3>
